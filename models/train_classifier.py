@@ -1,3 +1,4 @@
+import sys
 import nltk
 import re
 nltk.download(['punkt', 'wordnet'])
@@ -22,16 +23,11 @@ def load_data(database_filepath):
     '''
     This function loads data from given sql path.
     
-    INPUT: SQL Database path of sqlite 
-    
-    OUTPUT: 
-      
-     return : data in X 
-              data in Y 
-              data in Category names  forms.
+    INPUT: SQL Database path
+    OUTPUT: data in variables X,Y and Category names
     '''
     engine = create_engine('sqlite:///'+ database_filepath)
-    df = pd.read_sql_table('FigureEight', engine)
+    df = pd.read_sql_table('disaster_data', engine)
     X = df.message.values
     Y = df[df.columns[4:]].values
     category_names = list(df.columns[4:])
@@ -57,16 +53,15 @@ def tokenize(text):
     for tok in tokens:
         clean_tok=lemmatizer.lemmatize(tok).lower().strip()
         clean_tokens.append(clean_tok)
-    
+        
+    return clean_tokens 
+
 
 def build_model():
     '''
     This function builds model.
     
-    INPUT: 
-    
-    None
-    
+    INPUT: None
     OUTPUT: returns pipeline
     '''
     pipeline = Pipeline([
@@ -81,17 +76,12 @@ def build_model():
     cv = GridSearchCV(pipeline, param_grid=parameters)
     return cv
 
+
 def evaluate_model(model, X_test, Y_test, category_names):
     '''
-    This function evaluates the model based on the inputs data.
+    This function evaluates the model based on the inputs.
    
-   INPUT: 
-   
-   model object   :model name
-   X_test         :Test data value
-   Y_test         :Test data answer data value
-   category_names :All categories
-   
+   INPUT: model object, X_test, Y_test and category_names
    OUTPUT: prints classification report and gives multiple target accuracy
     '''
     
@@ -106,15 +96,10 @@ def save_model(model, model_filepath):
     '''
     This function saves the model at given path
     
-    INPUT: 
-     
-    model object      :model name
-    file name or path :(.pkl)
-    
+    INPUT: model object and file name or path (.pkl)
     OUTPUT: returns None ONly saves model pkl file
     '''
     joblib.dump(model, model_filepath)
-
 
 
 

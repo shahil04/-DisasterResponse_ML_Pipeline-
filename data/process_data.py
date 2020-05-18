@@ -21,7 +21,7 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
-      '''
+    '''
     This function will clean data.drop unwanted dublicate columns and dat. 
     
     INPUT: dataframe 
@@ -29,7 +29,7 @@ def clean_data(df):
     
     OUTPUT: Clean Dataframe
     '''
-    categories = df.categories.str.split(';', expand = True)
+    categories = df.categories.str.split(';', expand =True)
     row = categories.loc[0]
     category_colnames = row.apply(lambda x: x[:-2]).values.tolist()
     categories.columns = category_colnames
@@ -49,7 +49,7 @@ def save_data(df, database_filename):
     Output :save in database 
     '''
     engine=create_engine('sqlite:///' + database_filename)
-    df.to_sql('FigureEight',engine,index=False)
+    df.to_sql('disaster_data',engine,index=False)
   
 
 
